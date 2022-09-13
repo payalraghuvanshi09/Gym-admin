@@ -54,7 +54,7 @@ module.exports = {
         login( body.email, (err,results) => {
           
           if (!results) {
-            res.send("Login Failed")
+            // res.send("Login Failed")
             res.redirect('/')
           }
           const result = compareSync(body.password,results.password);
