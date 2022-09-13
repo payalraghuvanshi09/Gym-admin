@@ -95,23 +95,19 @@ module.exports = {
  
   
 },
-  logout: (req, res, next) => {
-    res.clearCookie('myCookie');
-    if (req.session) {
-      req.session = null;
-      
-    if ( req.session != null) {
-      console.log("err=>",err);
-      res.status(400).send('Unable to log out')
-    } else {
-      res.redirect('/login');
-   
-    }
-    } else {
-      res.end()
-    res.redirect('/login');
-      
-
-    }
+logout: (req, res, next) => {
+  res.clearCookie('myCookie');
+  if (req.session) {
+  req.session.destroy(err => {
+  if (err) {
+    res.status(400).send('Unable to log out')
+  } else {
+  res.redirect('/login');
+  next();
+  }
+  });
+  } else {
+    res.end()
+  }
   }  
 }

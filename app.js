@@ -1,9 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const serverless = require("serverless-http");
-// const session = require('express-session');
-// const MemoryStore = require('memorystore')(session);
-var cookieSession = require('cookie-session')
+const session = require('express-session');
 const date = require('date-and-time');
 
 // const bodyParser = require('body-parser')
@@ -37,13 +35,20 @@ const oneDay = 1000 * 60 * 60 * 24;
 app.set('trust proxy', 1);
 module.exports.handler = serverless(app)
 app.use('/.netlify/functions/api', router)
-app.use(cookieSession({
-  name: 'session',
-  keys: ["app"],
 
-  // Cookie Options
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
+
+app.use(
+  session({
+    name: 'myCookie',
+    cookie: { maxAge: oneDay },
+    secret: "app",
+    name: "app",
+    resave: true,
+    saveUninitialized: true,
+    unset: 'destroy'
+    // cookie: { maxAge: 6000 } /* 6000 ms? 6 seconds -> wut? :S */
+  })
+);
 
 app.use(function (req, res, next) {
   res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
